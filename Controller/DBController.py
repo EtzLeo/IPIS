@@ -10,26 +10,14 @@ class DB_Controller:
         con = sql.connect(host=self.host, user=self.user, database=self.database)
         with con:
             cur = con.cursor()
-            cur.execute(syntax[command].format(param))
+            cur.execute(syntax[command].format(*param))
             res = cur.fetchall()
             con.commit()
             return res
 
 
-syntax = {  "insert": "insert into visitors {} values {}",
-            "update": "update visitors set {} = {} where {} = {}",
-            "delete": "delete from visitors where {} = {}",
-            "select": "select * from visitors"}
-#
-# params = ("name",
-#           "surname",
-#           "gender",
-#           "birthdate",
-#           "passportseries",
-#           "passportnumber",
-#           "phonenumber",
-#           "roomnumber",
-#           "withchildren",
-#           "amountofresidents",
-#           "arrivaldate",
-#           "departuredate")
+syntax = {"insert": "insert into visitors {} values {}",
+          "update": "update visitors set {} = {} where {} = {}",
+          "delete": "delete from visitors where {} = {}",
+          "select": "select {} from visitors where {} = {}"}
+
