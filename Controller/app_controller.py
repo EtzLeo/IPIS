@@ -1,18 +1,11 @@
 from PyQt5 import QtWidgets
 from View import window
-import mysql.connector as sql
+from Controller.DBController import DB_Controller
+
 
 host = "localhost"
 user = "root"
 database = "hotel"
-
-
-def get_everything():
-    con = sql.connect(host=host, user=user, database=database)
-    with con:
-        cur = con.cursor()
-        cur.execute("select * from visitors")
-        return cur.fetchall()
 
 
 class App(QtWidgets.QMainWindow, window.Ui_MainWindow):
@@ -22,7 +15,8 @@ class App(QtWidgets.QMainWindow, window.Ui_MainWindow):
         self.setupTable()
 
     def setupTable(self):
-        data = get_everything()
+        controller = DB_Controller(host, user, database)
+        data = controller.exec("select")
 
         self.tableWidget.setRowCount(len(data))
         self.tableWidget.setColumnCount(len(data[0]))
