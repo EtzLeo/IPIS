@@ -31,3 +31,9 @@ class UserModel:
     @surname.setter
     def surname(self, value):
         self.__surname = value
+
+    def __str__(self):
+        return (str(self.__name) + " " + str(self.__surname) + " " + str(self.__gender) + " " + str(self.__birthDate) + " "
+        + str(self.__passportSeries) + " " + str(self.__passportNumber) + " " + str(self.__age) + " "
+        + str(self.__phoneNumber) + " " + str(self.__roomNumber) + " " + str(self.__withChildren) + " "
+        + str(self.__amountOfResidents) + " " + str(self.__arrivalDate) + " " + str(self.__departureDate))
