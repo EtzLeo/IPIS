@@ -123,6 +123,19 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         self.childrenEdit.setCurrentIndex(-1)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.nameEdit, self.surnameEdit)
+        Dialog.setTabOrder(self.surnameEdit, self.genderEdit)
+        Dialog.setTabOrder(self.genderEdit, self.birthdateEdit)
+        Dialog.setTabOrder(self.birthdateEdit, self.pseriesEdit)
+        Dialog.setTabOrder(self.pseriesEdit, self.pnumberEdit)
+        Dialog.setTabOrder(self.pnumberEdit, self.phoneEdit)
+        Dialog.setTabOrder(self.phoneEdit, self.roomEdit)
+        Dialog.setTabOrder(self.roomEdit, self.childrenEdit)
+        Dialog.setTabOrder(self.childrenEdit, self.residentsEdit)
+        Dialog.setTabOrder(self.residentsEdit, self.arrivalEdit)
+        Dialog.setTabOrder(self.arrivalEdit, self.departureEdit)
+        Dialog.setTabOrder(self.departureEdit, self.clearButton)
+        Dialog.setTabOrder(self.clearButton, self.saveButton)
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate

@@ -171,6 +171,13 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>refreshButton</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>editButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>tableWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

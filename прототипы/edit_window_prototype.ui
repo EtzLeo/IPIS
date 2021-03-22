@@ -268,6 +268,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>surnameEdit</tabstop>
+  <tabstop>genderEdit</tabstop>
+  <tabstop>birthdateEdit</tabstop>
+  <tabstop>pseriesEdit</tabstop>
+  <tabstop>pnumberEdit</tabstop>
+  <tabstop>phoneEdit</tabstop>
+  <tabstop>roomEdit</tabstop>
+  <tabstop>childrenEdit</tabstop>
+  <tabstop>residentsEdit</tabstop>
+  <tabstop>arrivalEdit</tabstop>
+  <tabstop>departureEdit</tabstop>
+  <tabstop>clearButton</tabstop>
+  <tabstop>saveButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
