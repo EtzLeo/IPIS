@@ -1,6 +1,6 @@
 import mysql.connector as sql
 
-class DB_Controller:
+class DBController:
     def __init__(self, host, user, database):
         self.host = host
         self.user = user
