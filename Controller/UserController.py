@@ -2,8 +2,15 @@ from Model import UserModel
 
 
 class UserController:
-    currentUser = UserModel  # текущий постоялец
-    isNewUser = True    # является ли постоялец вновь созданным
+    currentUser = UserModel
+    """
+        Текущий постоялец.
+    """
+
+    isNewUser = True
+    """
+    Является ли постоялец вновь созданным
+    """
 
     def __init__(self, users):
         """
@@ -11,9 +18,22 @@ class UserController:
 
         :param users: список посетителей отеля
         """
+
         self.__users = users
 
+    @property
+    def users(self):
+        return self.__users
+
     def findCurrentUser(self, passportSeries, passportNumber, arrivalDate):
+        """
+        Поиск текущего пользователя в списке пользователей.
+
+        :param passportSeries: серия паспорта
+        :param passportNumber: номер паспорта
+        :param arrivalDate: дата заселения
+        :return: текущий пользователь
+        """
         for user in self.__users:
             if (user.passportSeries == passportSeries and
                 user.passportNumber == passportNumber and
@@ -30,15 +50,6 @@ class UserController:
         if self.isNewUser:
             self.__users.append(self.currentUser)
         self.isNewUser = False
-
-
-    def getUserData(self):
-        """
-        Получение сохраненного списка постояльцев.
-
-        :return: список постояльцев
-        """
-        return self.__users
 
     def setNewUserData(self, gender, birthDate, passportSeries,
                  passportNumber, age, phoneNumber, roomNumber,
@@ -62,4 +73,9 @@ class UserController:
         return self.currentUser
 
     def __str__(self):
+        """
+        Перегрузка метода toString.
+
+        :return: объект в виде строки
+        """
         return (str(self.__users) + " " + str(self.currentUser) + " " + str(self.isNewUser))
