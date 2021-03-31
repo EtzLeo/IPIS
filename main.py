@@ -4,6 +4,13 @@ from Controller import app_controller
 
 
 def main():
+
+    """
+    Запуск программы
+
+    :return:
+    """
+
     app = QtWidgets.QApplication(sys.argv)
     window = app_controller.App()
     window.show()

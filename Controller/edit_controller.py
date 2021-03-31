@@ -6,6 +6,15 @@ from datetime import date
 
 class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
     def __init__(self,  db_controller, user=None, isNew=True):
+
+        """
+        Конструктор класса вспомогательного окна
+
+        :param db_controller: ссылка на родительский контроллер базы данных
+        :param user: ссылка на текущего пользователя
+        :param isNew: является ли пользователь новым
+        """
+
         super().__init__()
         self.setupUi()
 
@@ -26,6 +35,13 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         self.genderEdit.editTextChanged.connect(self.add_gender)
 
     def clear_form(self):
+
+        """
+        Очистка полей формы
+
+        :return:
+        """
+
         self.nameEdit.setText()
         self.surnameEdit.setText()
         self.genderEdit.setCurrentIndex(-1)
@@ -40,6 +56,13 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         self.departureEdit.setDate(date.today())
 
     def fill_form(self):
+
+        """
+        Заполнение полей формы данными о пользователе
+
+        :return:
+        """
+
         fields = self.user.GET_USER_DATA()
         self.nameEdit.setText(fields[1])
         self.surnameEdit.setText(fields[2])
@@ -55,9 +78,23 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         self.departureEdit.setDate(fields[12])
 
     def add_gender(self):
+
+        """
+        Добавление нового гендера
+
+        :return:
+        """
+
         self.gender_controller.SET_CURRENT_GENDER(self.genderEdit.currentText())
 
     def get_fields(self):
+
+        """
+        Получение значений всех полей формы
+
+        :return: кортеж всех собранных значений
+        """
+
         return (self.nameEdit.text(),
                 self.surnameEdit.text(),
                 self.genderEdit.currentText(),
@@ -72,9 +109,16 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
                 self.departureEdit.date())
 
     def save_changes(self):
+
+        """
+        Сохранение изменений, внесенных в форму. Закрытие вспомогательного окна
+
+        :return:
+        """
+
         if self.gender_controller.IS_NEW_GENDER:
             self.gender_controller.SAVE_CURRENT()
-        self.user.RESET_WITH(*self.get_fields())
+        self.user.setNewUserData(*self.get_fields())
         if self.isNew:
             self.db_controller.exec("insert", [params, self.get_fields()])
         else:
