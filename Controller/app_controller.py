@@ -19,7 +19,7 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
         self.refreshButton.clicked.connect(self.refresh_table)
         self.addButton.clicked.connect(self.add_line)
-        # self.editButton.click.connect(self.edit_line)
+        self.editButton.clicked.connect(self.edit_line)
         self.deleteButton.clicked.connect(self.delete_line)
 
         self.refresh_table()
@@ -50,25 +50,31 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
         :return:
         """
         edit = EditController()
-        edit.show()
-        self.user_controller.save()
-        self.refresh_table()
+        edit.exec_()
+        if edit.user:
+            self.user_controller.currentUser = edit.user
+            self.user_controller.save()
+            self.db_controller.exec("insert", [params_str, tuple(map(str, edit.user.getUserData()))])
+            self.refresh_table()
 
     def edit_line(self):
-
         """
         Изменение строки в таблице. Вызов вспомогательного окна и обновление таблицы после
 
         :return:
         """
-
         self.get_selected()
-        if self.user_controller.currentUser is not None:
-            edit = EditController(self.db_controller, self.user_controller.currentUser,
-                                  self.user_controller.isNewUser)
-            edit.show()
-            self.user_controller.save()
+        if self.user_controller.currentUser:
+            edit = EditController(self.user_controller.currentUser, False)
+            edit.exec_()
+            if edit.user:
+                self.user_controller.setNewUserData(*edit.user.getUserData()[2::])
+                values = list(map(str, edit.user.getUserData()))
+                pairs = ["{} = \'{}\'".format(params[i], values[i]) for i in range(len(params))]
+                self.db_controller.exec("update", [", ".join(pairs),
+                                                   "ID_Client", self.user_controller.currentUser.id])
             self.refresh_table()
+
 
     def delete_line(self):
         """
@@ -95,13 +101,11 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
     @staticmethod
     def show_warning():
-
         """
         Показ предупреждающего окна
 
         :return:
         """
-
         warn = QtWidgets.QMessageBox()
         warn.setWindowTitle("Внимание")
         warn.setText("Ни одна строка не выбрана")
@@ -115,8 +119,12 @@ host = "localhost"
 user = "root"
 database = "hotel"
 
-params = """(`Name`, `Surname`, `Gender`, `BirthDate`, 
-            "`PassportSeries`, `PassportNumber`, `PhoneNumber`, 
-            "`RoomNumber`, `WithChildren`, `AmountOfResidents`, 
-            "`ArrivalDate`, `DepartureDate`)"""
+params = ('Name', 'Surname', 'Gender', 'BirthDate',
+          'PassportSeries', 'PassportNumber', 'PhoneNumber',
+          'RoomNumber', 'WithChildren', 'AmountOfResidents',
+          'ArrivalDate', 'DepartureDate')
 
+params_str = """(Name, Surname, Gender, BirthDate,
+                 PassportSeries, PassportNumber, PhoneNumber,
+                 RoomNumber, WithChildren, AmountOfResidents,
+                 ArrivalDate, DepartureDate)"""

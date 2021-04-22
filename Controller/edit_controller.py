@@ -1,12 +1,12 @@
 from PyQt5 import QtWidgets
 from View import edit_window
-from Controller.GenderController import GenderController
+from PyQt5.QtCore import QDate
 from datetime import date
+from Model.UserModel import UserModel
 
 
 class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
     def __init__(self, user=None, isNew=True):
-
         """
         Конструктор класса вспомогательного окна
 
@@ -14,14 +14,11 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         :param user: ссылка на текущего пользователя
         :param isNew: является ли пользователь новым
         """
-
         super().__init__()
-        self.setupUi()
+        self.setupUi(self)
 
         self.user = user
         self.isNew = isNew
-        # self.gender_controller = GenderController(self.db_controller.exec("select",
-        #                                                                   ["distinct gender", 1, 1]))
 
         if self.isNew:
             self.clear_form()
@@ -30,51 +27,45 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         self.clearButton.clicked.connect(self.clear_form)
         self.saveButton.clicked.connect(self.save_changes)
-        # self.genderEdit.addItems(self.gender_controller.GET_GENDERS_LIST())
-        # self.genderEdit.editTextChanged.connect(self.add_gender)
 
     def clear_form(self):
-
         """
         Очистка полей формы
 
         :return:
         """
-
-        self.nameEdit.setText()
-        self.surnameEdit.setText()
+        self.nameEdit.setText("")
+        self.surnameEdit.setText("")
         self.genderEdit.setCurrentIndex(-1)
         self.birthdateEdit.setDate(date.today())
-        self.pseriesEdit.setText()
-        self.pnumberEdit.setText()
-        self.phoneEdit.setText()
-        self.roomEdit.setText()
+        self.pseriesEdit.setText("")
+        self.pnumberEdit.setText("")
+        self.phoneEdit.setText("")
+        self.roomEdit.clear()
         self.childrenEdit.setCurrentIndex(-1)
-        self.residentsEdit.setText()
+        self.residentsEdit.clear()
         self.arrivalEdit.setDate(date.today())
         self.departureEdit.setDate(date.today())
 
     def fill_form(self):
-
         """
         Заполнение полей формы данными о пользователе
 
         :return:
         """
-
-        fields = self.user.GET_USER_DATA()
-        self.nameEdit.setText(fields[1])
-        self.surnameEdit.setText(fields[2])
-        self.genderEdit.setCurrentText(fields[3])
-        self.birthdateEdit.setDate(fields[4])
-        self.pseriesEdit.setText(fields[5])
-        self.pnumberEdit.setText(fields[6])
-        self.phoneEdit.setText(fields[7])
-        self.roomEdit.setText(fields[8])
-        self.childrenEdit.setCurrentIndex(int(fields[9]))
-        self.residentsEdit.setText(fields[10])
-        self.arrivalEdit.setDate(fields[11])
-        self.departureEdit.setDate(fields[12])
+        fields = self.user.getUserData()
+        self.nameEdit.setText(fields[0])
+        self.surnameEdit.setText(fields[1])
+        self.genderEdit.setCurrentText(fields[2])
+        self.birthdateEdit.setDate(fields[3])
+        self.pseriesEdit.setText(str(fields[4]))
+        self.pnumberEdit.setText(str(fields[5]))
+        self.phoneEdit.setText(fields[6])
+        self.roomEdit.setValue(int(fields[7]))
+        self.childrenEdit.setCurrentIndex(int(fields[8]))
+        self.residentsEdit.setValue(int(fields[9]))
+        self.arrivalEdit.setDate(fields[10])
+        self.departureEdit.setDate(fields[11])
 
     def add_gender(self):
         """
@@ -88,20 +79,20 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         """
         Получение значений всех полей формы
 
-        :return: кортеж всех собранных значений
+        :return: список всех собранных значений
         """
-        return (self.nameEdit.text(),
+        return [self.nameEdit.text(),
                 self.surnameEdit.text(),
                 self.genderEdit.currentText(),
-                self.birthdateEdit.date(),
+                self.birthdateEdit.date().toPyDate(),
                 self.pseriesEdit.text(),
-                self.pnumberEdit.text,
+                self.pnumberEdit.text(),
                 self.phoneEdit.text(),
                 self.roomEdit.text(),
                 self.childrenEdit.currentIndex(),
                 self.residentsEdit.text(),
-                self.arrivalEdit.date(),
-                self.departureEdit.date())
+                self.arrivalEdit.date().toPyDate(),
+                self.departureEdit.date().toPyDate()]
 
     def save_changes(self):
         """
@@ -113,14 +104,27 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         #     self.gender_controller.SAVE_CURRENT()
         fields = self.get_fields()
         if len(fields) == 12:
-            self.user.setNewUserData(*self.get_fields())
             if self.isNew:
-
-            # else:
-            #     self.db_controller.exec("update", [params, self.get_fields(), "id_client",
-            #                                        self.user.GET_USER_DATA()[0]])
+                self.user = UserModel([None] + fields)
+            else:
+                self.user.resetWith(*fields)
             self.close()
         else:
-            print("pidor")
+            self.show_warning()
+
+    @staticmethod
+    def show_warning():
+        """
+        Показ предупреждающего окна
+
+        :return:
+        """
+        warn = QtWidgets.QMessageBox()
+        warn.setWindowTitle("Внимание")
+        warn.setText("Некоторые поля не заполнены")
+        warn.setInformativeText("Для этой операции необходимо заполнить все поля")
+        warn.setIcon(QtWidgets.QMessageBox.Warning)
+        warn.setDefaultButton(QtWidgets.QMessageBox.Ok)
+        warn.exec()
 
 
