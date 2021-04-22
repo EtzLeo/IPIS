@@ -1,13 +1,16 @@
-class GenderController():
-    def __init__(self, currentGender, genderList):
+from Model.gender_model import GenderModel
+
+
+class GenderController:
+    def __init__(self, genderList):
         """
         Создание контроллера.
 
         :param currentGender: текущий гендер
         :param genderList: список всех гендеров
         """
-        self.__currentGender = currentGender
-        self.__genderList = genderList
+        self.__currentGender = None
+        self.__genderList = [GenderModel(gender) for gender in genderList]
 
     @property
     def genderList(self):
@@ -36,3 +39,6 @@ class GenderController():
         """
         if self.isNew():
             self.__genderList.append(self.__currentGender)
+
+    def set_current(self, gender):
+        self.__currentGender = GenderModel(gender)

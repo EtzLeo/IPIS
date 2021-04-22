@@ -1,8 +1,8 @@
-from Model import UserModel
+from Model.UserModel import UserModel
 
 
 class UserController:
-    currentUser = UserModel
+    currentUser = None
     """
         Текущий постоялец.
     """
@@ -19,13 +19,13 @@ class UserController:
         :param users: список посетителей отеля
         """
 
-        self.__users = users
+        self.__users = [UserModel(user) for user in users]
 
     @property
-    def users(self):
+    def get_users(self):
         return self.__users
 
-    def findCurrentUser(self, passportSeries, passportNumber, arrivalDate):
+    def findCurrentUser(self, passportSeries, passportNumber):#, arrivalDate):
         """
         Поиск текущего пользователя в списке пользователей.
 
@@ -36,12 +36,11 @@ class UserController:
         """
         for user in self.__users:
             if (user.passportSeries == passportSeries and
-                user.passportNumber == passportNumber and
-                user.arrivalDate == arrivalDate):
+                    user.passportNumber == passportNumber):
                 self.currentUser = user
                 self.isNewUser = False
+                break
         return self.currentUser
-
 
     def save(self):
         """
@@ -52,17 +51,17 @@ class UserController:
         self.isNewUser = False
 
     def setNewUserData(self, gender, birthDate, passportSeries,
-                 passportNumber, age, phoneNumber, roomNumber,
-                 withChildren, amountOfResidents, arrivalDate, departureDate):
+                       passportNumber, phoneNumber, roomNumber,
+                       withChildren, amountOfResidents, arrivalDate, departureDate):
         """
         Изменение данных постояльца.
 
         :return: постоялец с новым набором данных
         """
-        if self.isNewUser == False:
+        if not self.isNewUser:
             user = UserModel.UserModel(self.currentUser.name, self.currentUser.surname,
                                        gender, birthDate, passportSeries,
-                                       passportNumber, age, phoneNumber, roomNumber,
+                                       passportNumber, phoneNumber, roomNumber,
                                        withChildren, amountOfResidents, arrivalDate, departureDate
                                        )
 
@@ -71,6 +70,8 @@ class UserController:
             self.__users.remove(self.currentUser)
             self.currentUser = user
         return self.currentUser
+
+    def 
 
     def __str__(self):
         """
