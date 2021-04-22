@@ -2,25 +2,29 @@ from Controller import UserController
 
 
 class UserModel:
-    def __init__(self, date):
+    def __init__(self, data):
         """
         Создание модели пользователя.
 
-        :param date: данные о пользователе в виде списка
+        :param data: данные о пользователе в виде списка
         """
-        self.__name = date[0]
-        self.__surname = date[1]
-        self.__gender = date[2]
-        self.__birthDate = date[3]
-        self.__passportSeries = date[4]
-        self.__passportNumber = date[5]
-        self.__age = date[6]
-        self.__phoneNumber = date[7]
-        self.__roomNumber = date[8]
-        self.__withChildren = date[9]
-        self.__amountOfResidents = date[10]
-        self.__arrivalDate = date[11]
-        self.__departureDate = date[12]
+        self.__id = data[0]
+        self.__name = data[1]
+        self.__surname = data[2]
+        self.__gender = data[3]
+        self.__birthDate = data[4]
+        self.__passportSeries = data[5]
+        self.__passportNumber = data[6]
+        self.__phoneNumber = data[7]
+        self.__roomNumber = data[8]
+        self.__withChildren = data[9]
+        self.__amountOfResidents = data[10]
+        self.__arrivalDate = data[11]
+        self.__departureDate = data[12]
+
+    @property
+    def id(self):
+        return self.__id
 
     @property
     def name(self):
@@ -47,10 +51,6 @@ class UserModel:
         return self.__passportNumber
 
     @property
-    def age(self):
-        return self.__age
-
-    @property
     def phoneNumber(self):
         return self.__phoneNumber
 
@@ -75,7 +75,7 @@ class UserModel:
         return self.__departureDate
 
     def resetWith(self, name, surname, gender, birthDate, passportSeries,
-                 passportNumber, age, phoneNumber, roomNumber,
+                 passportNumber, phoneNumber, roomNumber,
                  withChildren, amountOfResidents, arrivalDate, departureDate):
         """
         Изменение данных пользователя.
@@ -86,7 +86,6 @@ class UserModel:
         :param birthDate: дата рождения
         :param passportSeries: серия паспорта
         :param passportNumber: номер паспорта
-        :param age: возраст
         :param phoneNumber: номер телефона
         :param roomNumber: номер комнаты
         :param withChildren: наличие детей
@@ -100,7 +99,6 @@ class UserModel:
         self.__birthDate = birthDate
         self.__passportSeries = passportSeries
         self.__passportNumber = passportNumber
-        self.__age = age
         self.__phoneNumber = phoneNumber
         self.__roomNumber = roomNumber
         self.__withChildren = withChildren
@@ -120,7 +118,6 @@ class UserModel:
         self.__birthDate,
         self.__passportSeries,
         self.__passportNumber,
-        self.__age,
         self.__phoneNumber,
         self.__roomNumber,
         self.__withChildren,
