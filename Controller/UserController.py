@@ -25,7 +25,7 @@ class UserController:
     def get_users(self):
         return self.__users
 
-    def findCurrentUser(self, passportSeries, passportNumber):#, arrivalDate):
+    def findCurrentUser(self, passportSeries, passportNumber):
         """
         Поиск текущего пользователя в списке пользователей.
 
@@ -59,11 +59,10 @@ class UserController:
         :return: постоялец с новым набором данных
         """
         if not self.isNewUser:
-            user = UserModel.UserModel(self.currentUser.name, self.currentUser.surname,
-                                       gender, birthDate, passportSeries,
-                                       passportNumber, phoneNumber, roomNumber,
-                                       withChildren, amountOfResidents, arrivalDate, departureDate
-                                       )
+            user = UserModel([self.currentUser.id, self.currentUser.name, self.currentUser.surname,
+                             gender, birthDate, passportSeries,
+                             passportNumber, phoneNumber, roomNumber,
+                             withChildren, amountOfResidents, arrivalDate, departureDate])
 
             ind = self.__users.index(self.currentUser)
             self.__users.insert(ind, user)
@@ -71,7 +70,9 @@ class UserController:
             self.currentUser = user
         return self.currentUser
 
-    def 
+    def drop_current_user(self):
+        self.currentUser = None
+        self.isNewUser = True
 
     def __str__(self):
         """
