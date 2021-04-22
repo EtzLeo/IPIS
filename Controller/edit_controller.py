@@ -3,14 +3,14 @@ from View import edit_window
 from PyQt5.QtCore import QDate
 from datetime import date
 from Model.UserModel import UserModel
+from Controller.GenderController import GenderController
 
 
 class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
-    def __init__(self, user=None, isNew=True):
+    def __init__(self, genders, user=None, isNew=True):
         """
         Конструктор класса вспомогательного окна
 
-        :param db_controller: ссылка на родительский контроллер базы данных
         :param user: ссылка на текущего пользователя
         :param isNew: является ли пользователь новым
         """
@@ -19,6 +19,7 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         self.user = user
         self.isNew = isNew
+        self.gender_controller = GenderController(genders)
 
         if self.isNew:
             self.clear_form()
@@ -27,6 +28,7 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         self.clearButton.clicked.connect(self.clear_form)
         self.saveButton.clicked.connect(self.save_changes)
+        self.genderEdit.editTextChanged.connect(self.add_gender)
 
     def clear_form(self):
         """
@@ -34,6 +36,8 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         :return:
         """
+        self.reset_items()
+
         self.nameEdit.setText("")
         self.surnameEdit.setText("")
         self.genderEdit.setCurrentIndex(-1)
@@ -47,12 +51,19 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
         self.arrivalEdit.setDate(date.today())
         self.departureEdit.setDate(date.today())
 
+    def reset_items(self):
+        self.genderEdit.clear()
+        for gender in self.gender_controller.genderList:
+            self.genderEdit.addItem(str(gender))
+
     def fill_form(self):
         """
         Заполнение полей формы данными о пользователе
 
         :return:
         """
+        self.reset_items()
+
         fields = self.user.getUserData()
         self.nameEdit.setText(fields[0])
         self.surnameEdit.setText(fields[1])
@@ -73,7 +84,9 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         :return:
         """
-        self.gender_controller.SET_CURRENT_GENDER(self.genderEdit.currentText())
+        self.gender_controller.set_current(self.genderEdit.currentText())
+        if self.gender_controller.isNew():
+            self.gender_controller.saveCurrent()
 
     def get_fields(self):
         """
@@ -100,10 +113,8 @@ class EditController(QtWidgets.QDialog, edit_window.Ui_Dialog):
 
         :return:
         """
-        # if self.gender_controller.IS_NEW_GENDER:
-        #     self.gender_controller.SAVE_CURRENT()
         fields = self.get_fields()
-        if len(fields) == 12:
+        if "" not in fields:
             if self.isNew:
                 self.user = UserModel([None] + fields)
             else:

@@ -39,6 +39,10 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
         self.tableWidget.setRowCount(len(users))
         for i in range(len(users)):
             user = list(map(str, users[i].getUserData()))
+            if user[8] == "1":
+                user[8] = "Да"
+            else:
+                user[8] = "Нет"
             for j in range(12):
                 self.tableWidget.setItem(i, j, QtWidgets.QTableWidgetItem(user[j]))
         self.tableWidget.show()
@@ -49,7 +53,7 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
 
         :return:
         """
-        edit = EditController()
+        edit = EditController(self.db_controller.exec("select", ["distinct gender", 1, 1]))
         edit.exec_()
         if edit.user:
             self.user_controller.currentUser = edit.user
@@ -65,7 +69,8 @@ class App(QtWidgets.QMainWindow, main_window.Ui_MainWindow):
         """
         self.get_selected()
         if self.user_controller.currentUser:
-            edit = EditController(self.user_controller.currentUser, False)
+            edit = EditController(self.db_controller.exec("select", ["distinct gender", 1, 1]),
+                                  self.user_controller.currentUser, False)
             edit.exec_()
             if edit.user:
                 self.user_controller.setNewUserData(*edit.user.getUserData()[2::])

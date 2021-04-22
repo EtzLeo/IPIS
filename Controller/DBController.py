@@ -35,7 +35,7 @@ class DBController:
 
 
 syntax = {"insert": "insert into visitors {} values {}",
-          "update": "update visitors set {} = {} where {} = {}",
+          "update": "update visitors set {} where {} = {}",
           "delete": "delete from visitors where {} = {}",
           "select": "select {} from visitors where {} = {}"}
 
